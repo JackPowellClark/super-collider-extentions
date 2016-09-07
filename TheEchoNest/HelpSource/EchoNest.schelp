@@ -1,0 +1,104 @@
+TITLE:: EchoNest
+summary:: A wrapper for accessing The Echo Nest's track API methods
+categories:: UGens>Analysis
+keyword:: TheEchoNest, echo, nest, analysis
+
+DESCRIPTION::
+The Echo Nest is the industries leading music intelligence company, providing developers with the deepest understanding of music content and music fans. The Echo Nest API allows for the calling of a variety of methods that respond in JSON or XML.
+
+This extension provides convenience methods for easily accessing The Echo Nest's 'Track API Methods' from within SuperCollider. These 'Track API Methods' provide methods for analyzing and retrieving information about tracks. This extension will link::Classes/String#-parseYAML#parse:: query responses, returning a nested structure of link::Classes/IdentityDictionary##IdentityDictionaries::.
+
+note::
+You must have your own Developer API key to make use of The Echo Nest's APIs. To obtain a key, please register for an account at: http://developer.echonest.com/raw_tutorials/register.html
+::
+
+
+CLASSMETHODS::
+
+METHOD:: buildUploadQuery
+Builds an upload query for The Echo Nest
+
+code::
+/* Returns a Unix formatted upload query */
+TheEchoNest.buildUploadQuery("trackPathHere", "developerAPIKeyHere", "responseLocationHere");
+::
+
+ARGUMENT:: path
+An audio track that must be of type wav, mp3, au, ogg, m4a or mp4
+
+ARGUMENT:: developerAPIKey
+A user's Developer API Key for The Echo Nest
+
+ARGUMENT:: tmpDir
+A directory for storing returned responses
+
+ARGUMENT:: tmpFileName
+A file name for the returned response; this will be converted to .txt automatically
+
+returns:: A Unix formatted upload query
+
+METHOD:: buildIdQuery
+Builds a track ID query for The Echo Nest
+
+code::
+/* Returns a Unix formatted track ID query */
+TheEchoNest.buildIdQuery("trackIdHere", "developerAPIKeyHere", "responseLocationHere");
+::
+
+ARGUMENT:: id
+A track id compatible with The Echo Nest
+
+ARGUMENT:: developerAPIKey
+A user's Developer API Key for The Echo Nest
+
+ARGUMENT:: tmpDir
+A directory for storing returned responses
+
+ARGUMENT:: tmpFileName
+A file name for the returned response; this will be converted to .txt automatically
+
+returns:: A Unix formatted track ID query
+
+METHOD:: pathQuery
+Upload a track to The Echo Nest's analyzer for analysis; optionally query for results once completed
+
+code::
+/* Upload an Array of track paths; query once complete */
+(
+var pathArray;
+
+pathArray = ("yourTrackFolderHere/*.mp3").pathMatch;
+
+TheEchoNest.pathQuery(pathArray, "developerAPIKeyHere", query = true);
+)
+
+/* Upload a single track path (still an Array); do not query once complete, return uploaded track ID */
+TheEchoNest.pathQuery(["yourTrackHere.mp3"], "developerAPIKeyHere",  query = false);
+::
+
+ARGUMENT:: pathArray
+An array of track paths - audio tracks must be of type wav, mp3, au, ogg, m4a or mp4
+
+ARGUMENT:: developerAPIKey
+A user's Developer API Key for The Echo Nest
+
+ARGUMENT:: query
+Boolean indicating whether to invoke 'idQuery' once uploads are complete.
+
+returns:: A link::Classes/String#-parseYAML#parsed:: link::Classes/IdentityDictionary##IdentityDictionary:: of form Artist -> Title -> Audio Summary (if 'query' is true) OR an link::Classes/Array##Array:: of track IDs (if 'query' is false)
+
+METHOD:: idQuery
+Query The Echo Nest with a track ID
+
+code::
+/* Test query with a mystery ID... */
+TheEchoNest.idQuery(["TREDEPE1448EDA4A45"], "developerAPIKeyHere");
+::
+
+ARGUMENT:: idArray
+A track ID compatible with The Echo Nest
+
+ARGUMENT:: developerAPIKey
+A user's Developer API Key for The Echo Nest
+
+returns:: A link::Classes/String#-parseYAML#parsed:: link::Classes/IdentityDictionary##IdentityDictionary:: of form Artist -> Title -> Audio Summary
